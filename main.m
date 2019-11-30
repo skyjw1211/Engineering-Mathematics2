@@ -2,8 +2,8 @@ function main()
 %%
 %ctrl+r로 주석, ctrl+t로 주석 해제
 %초깃값 주기
-%N = [1 2];
-%D = [1 4 3 0];
+% N = [1 2];
+% D = [1 4 3 0];
 
 %%
 %초기 값 입력 [1 2] <- 이런 식으로 입력해야 함.
@@ -41,8 +41,8 @@ end
 %%
 
 [c, order_r] = partial_fraction(N, r);
-[new_c, new_d] = complex_changer(c, r, order_r, is_complex);
-res = inverse_laplace(new_c, new_d, K_s);
+[new_c, new_d] = coeff_changer(c, r, order_r);
+res = inverse_laplace(new_c, new_d, K_s, is_complex);
 res
 
 % c

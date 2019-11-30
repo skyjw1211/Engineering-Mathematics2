@@ -8,8 +8,7 @@ function res = inverse_laplace(new_c, new_d, K_s, is_complex)
 % K_s = 0;
 % is_complex = [1, 1, 0];
 
-new_c
-new_d
+
 syms s t %symbolic 생성 위한 준비 작업
 
 if sum(is_complex)==0 %실근으로만 이뤄진 경우

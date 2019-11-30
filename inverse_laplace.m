@@ -1,23 +1,53 @@
-function res = inverse_laplace(new_c, new_d, K_s)
+function res = inverse_laplace(new_c, new_d, K_s, is_complex)
 
 % new_c = [-0.5000   -0.1667    0.6667];
 % new_d = [[1 1];[1 3]; [1 0]];
 
+% new_c = [-0.7500 - 0.2500i; -0.7500 + 0.2500i;1.5000 + 0.0000i];
+% new_d = [1.0000 + 0.0000i   1.0000 - 1.0000i; 1.0000 + 0.0000i   1.0000 + 1.0000i;1.0000 + 0.0000i   0.0000 + 0.0000i];
+% K_s = 0;
+% is_complex = [1, 1, 0];
 
-syms s t %symbolic »ı¼º À§ÇÑ ÁØºñ ÀÛ¾÷
+new_c
+new_d
+syms s t %symbolic ìƒì„± ìœ„í•œ ì¤€ë¹„ ì‘ì—…
 
-%Ç×À» ÇÕÄ£´Ù.
-terms = 0;
-for k = 1:length(new_c)
-    snum = poly2sym(new_c(k), s);
-    sden = poly2sym(new_d(k, 1:end), s);
-    terms = terms + snum/sden;
+if sum(is_complex)==0 %ì‹¤ê·¼ìœ¼ë¡œë§Œ ì´ë¤„ì§„ ê²½ìš°
+    %í•­ì„ í•©ì¹œë‹¤.
+    terms = 0;
+    for k = 1:length(new_c)
+        snum = poly2sym(new_c(k), s);
+        sden = poly2sym(new_d(k, 1:end), s);
+        terms = terms + snum/sden;
+    end
+    terms = terms + K_s;
+    
+    
+else %í—ˆê·¼ì´ ìˆëŠ” ê²½ìš°
+    k = 1;
+    terms = 0;
+    while k<=length(new_c)
+        %í•­ì„ í•©ì¹œë‹¤.
+        if is_complex(k)==0 %ì‹¤ê·¼ì¸ ê²½ìš°
+            snum = poly2sym(new_c(k), s);
+            sden = poly2sym(new_d(k, 1:end), s);
+            terms = terms + snum/sden;
+            k = k+1;
+        else%í—ˆê·¼ì¸ ê²½ìš°
+            temp_c = new_c(k)*new_d(k+1, 1:end)+new_c(k+1)*new_d(k, 1:end);
+            temp_d = conv(new_d(k, 1:end),new_d(k+1, 1:end));
+            snum = poly2sym(temp_c, s);
+            sden = poly2sym(temp_d, s);
+            terms = terms + snum/sden;
+            k = k+2;
+        end
+    end
+    terms = terms + K_s;
 end
-terms = terms + K_s;
-
-%¿ª ¶óÇÃ¶ó½º º¯È¯
+%ì—­ ë¼í”Œë¼ìŠ¤ ë³€í™˜
 res = [];
 res = ilaplace(terms);
 res = simplify(res, 'Steps',10);
-res = collect(res, exp(-t)); %exp(-t)¸¦ ±âÁØÀ¸·Î ´ÙÇ×½ÄÀ» ¸ğÀº ÈÄ Á¤·Ä
+res = collect(res, exp(-t)); %exp(-t)ë¥¼ ê¸°ì¤€ìœ¼ë¡œ ë‹¤í•­ì‹ì„ ëª¨ì€ í›„ ì •ë ¬
+
 

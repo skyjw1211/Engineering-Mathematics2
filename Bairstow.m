@@ -6,11 +6,12 @@ while(numel(a) >2)
     r = [r;r2];
     a = b;
 end
-if(numel(a) == 2) %³²Àº ´ÙÇ×½ÄÀÌ 1Â÷½ÄÀÌ¸é, ÇØ ÁýÇÕ¿¡ ±× ÀÏÂ÷½ÄÀÇ ÇØ Ãß°¡
+if(numel(a) == 2) %ë‚¨ì€ ë‹¤í•­ì‹ì´ 1ì°¨ì‹ì´ë©´, í•´ ì§‘í•©ì— ê·¸ ì¼ì°¨ì‹ì˜ í•´ ì¶”ê°€
     r = [r;-a(1)/a(2)];
 end
 
 function r2 = bairstow(a)
+global b;
 error = 1;
 n = numel(a);
 u = a(n-1)/a(n);
@@ -22,11 +23,12 @@ while error > 1e-10
     v = v - ((u*g - h)*d - c*v*g)/D;
     error = norm([c,d]);
 end
+b = b(1:n-2);
 D = sqrt(u^2-4*v);
 r2 = [0.5*(-u + D);0.5*(-u - D)];
 
 
-function [c,d,g,h] = cdgh(a, u, v) %c,d,g,h Ã£¾Æ¼­ °¡Á®¿À±â, ¹ÌÁ¤°è¼ö¹ý
+function [c,d,g,h] = cdgh(a, u, v) %c,d,g,h ì°¾ì•„ì„œ ê°€ì ¸ì˜¤ê¸°, ë¯¸ì •ê³„ìˆ˜ë²•
 global b
 b = zeros(size(a)); f = b; n = numel(b);
 for i = n-2:-1:1
@@ -37,4 +39,3 @@ c = a(2) - u*b(1) - v*b(2);
 g = b(2) - u*f(1) - v*f(2);
 d = a(1) - v*b(1);
 h = b(1) - v*f(1);
-b = b(1:n-2);

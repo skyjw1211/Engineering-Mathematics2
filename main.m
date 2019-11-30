@@ -17,12 +17,12 @@ D
 %%
 %N의 차수가 D보다 큰 경우
 syms s
-K_s = [];
-if size(N) > size(D)
-    Q, K_s = deconv(N, D);
-    N = Q;
+Q = [];
+if size(N,2) > size(D,2)
+    [Q, R] = deconv(N, D);
+    N = N-conv(Q,D);
 end
-K_s = poly2sym(K_s,s);
+K_s = poly2sym(Q,s);
 
 %%
 %Bairstow방식으로 분모 다항식의 해 구하기

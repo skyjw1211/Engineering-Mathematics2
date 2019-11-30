@@ -2,10 +2,9 @@ function [c,order_r] = partial_fraction(N, r)
 % N = [1 3];
 % r = [-1; -1; -2];
 
-r = r'; %¿­º¤ÅÍ·Î µÇ¾î ÀÖ´Â rÀ» Çà º¤ÅÍ·Î ÀüÄ¡
 
 %%
-%partial_fraction°á°ú ºÎºĞ ºĞ¼ö ºĞ¸ğÀÇ Â÷¼ö, order°¡ 2 ÀÌ»óÀÌ¸é Áß±Ù Æ÷ÇÔ
+%partial_fractionê²°ê³¼ ë¶€ë¶„ ë¶„ìˆ˜ ë¶„ëª¨ì˜ ì°¨ìˆ˜, orderê°€ 2 ì´ìƒì´ë©´ ì¤‘ê·¼ í¬í•¨
 order_r = ones(1,length(r));
 
 for k = 1:length(r)-1
@@ -16,7 +15,7 @@ for k = 1:length(r)-1
     end
 end
 
-%¹ÌÁ¤ °è¼ö¸¦ ±¸ÇÒ ¶§, ¹ÌºĞÀ» ¸î¹ø ÇØ¾ß ÇÏ´Â Áö
+%ë¯¸ì • ê³„ìˆ˜ë¥¼ êµ¬í•  ë•Œ, ë¯¸ë¶„ì„ ëª‡ë²ˆ í•´ì•¼ í•˜ëŠ” ì§€
 deriv_count = ones(1,length(r));
 
 for k = 1:length(r)-1
@@ -29,12 +28,13 @@ end
 
 
 
-%order¿Í rÀ» ÂüÁ¶ÇØ c°ªÀ» ±¸ÇÑ´Ù.(N°ú find_dif_poly°ªÀ» °è»êÇØ¼­)
+%orderì™€ rì„ ì°¸ì¡°í•´ cê°’ì„ êµ¬í•œë‹¤.(Nê³¼ find_dif_polyê°’ì„ ê³„ì‚°í•´ì„œ)
 c = zeros(1, length(r));
+
 for i = 1:length(r)
-    if deriv_count(i) == 1 %ºĞ¸ğ Ç×ÀÇ Â÷¼ö°¡ 1ÀÎ °æ¿ì, deriv_countµµ 1ÀÓ, ÀÌ °æ¿ì ¹ÌºĞ ¾øÀÌ ±¸ÇÔ
+    if deriv_count(i) == 1 %ë¶„ëª¨ í•­ì˜ ì°¨ìˆ˜ê°€ 1ì¸ ê²½ìš°, deriv_countë„ 1ì„, ì´ ê²½ìš° ë¯¸ë¶„ ì—†ì´ êµ¬í•¨
         c(i) = polyval(N,r(i)) / polyval(find_dif_poly(r, r(i)), r(i));
-    else %ÇÊ¿äÇÑ ¹ÌºĞ È½¼ö 2 ÀÌ»ó
+    else %í•„ìš”í•œ ë¯¸ë¶„ íšŸìˆ˜ 2 ì´ìƒ
         [N_d,D_d] = polyder(N,find_dif_poly(r, r(i)));
         for k = 2: deriv_count(i)-1
             [N_d,D_d] = polyder(N_d,D_d);
@@ -46,7 +46,7 @@ for i = 1:length(r)
 end
   
 
-function res = find_dif_poly(r, pole) %D(s) Áß ÀÚ½ÅÀÇ Ç×À» Á¦¿ÜÇÑ ´ÙÇ×½Ä ¹İÈ¯
+function res = find_dif_poly(r, pole) %D(s) ì¤‘ ìì‹ ì˜ í•­ì„ ì œì™¸í•œ ë‹¤í•­ì‹ ë°˜í™˜
 dif_r = [];
 for n = 1:length(r)
     if r(n) ~= pole
@@ -54,7 +54,7 @@ for n = 1:length(r)
     end
 end
 
-%¸¸ÀÏ ´ÙÁß±ÙÀ¸·Î¸¸ ÀÌ·ç¾îÁø ´ÙÇ×½ÄÀÌ¶ó¸é? -> 1¸¸ ¹İÈ¯ÇÑ´Ù.(³ª´²ÁÙ ÇÊ¿ä°¡ ¾ø±â¿¡)
+%ë§Œì¼ ë‹¤ì¤‘ê·¼ìœ¼ë¡œë§Œ ì´ë£¨ì–´ì§„ ë‹¤í•­ì‹ì´ë¼ë©´? -> 1ë§Œ ë°˜í™˜í•œë‹¤.(ë‚˜ëˆ ì¤„ í•„ìš”ê°€ ì—†ê¸°ì—)
 if isempty(dif_r)
     res = 1;
     return;
@@ -63,11 +63,8 @@ end
 res = [1 -dif_r(1)];
 
 for j = 2:length(dif_r)
-    res = conv(res, [1 -dif_r(j)]); %´ÙÇ×½Ä °è¼ö convolution °öÀ¸·Î °è»ê
+    res = conv(res, [1 -dif_r(j)]); %ë‹¤í•­ì‹ ê³„ìˆ˜ convolution ê³±ìœ¼ë¡œ ê³„ì‚°
 end
-   
-
-    
     
 
     

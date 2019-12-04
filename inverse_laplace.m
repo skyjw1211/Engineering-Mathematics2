@@ -1,4 +1,4 @@
-function res = inverse_laplace(new_c, new_d, K_s, is_complex)
+function res = inverse_laplace(new_c, new_d, K_s, is_complex, order_r)
 
 % new_c = [-0.5000   -0.1667    0.6667];
 % new_d = [[1 1];[1 3]; [1 0]];
@@ -11,13 +11,23 @@ function res = inverse_laplace(new_c, new_d, K_s, is_complex)
 
 syms s t %symbolic 생성 위한 준비 작업
 
-if sum(is_complex)==0 %실근으로만 이뤄진 경우
+if sum(is_complex)==0 %실수로만 이뤄진 경우
     %항을 합친다.
     terms = 0;
     for k = 1:length(new_c)
+        if order_r == 1
         snum = poly2sym(new_c(k), s);
         sden = poly2sym(new_d(k, 1:end), s);
         terms = terms + snum/sden;
+        else %중근일 경우
+            snum = poly2sym(new_c(k), s);
+            temp_term = new_d(k, 1:end);
+            for j = 1:order_r(k)-1
+                temp_term = conv(temp_term, temp_term); %차수만큼 곱해줌
+            end
+            sden = poly2sym(temp_term, s);
+            terms = terms + snum/sden;
+        end
     end
     terms = terms + K_s;
     
@@ -46,7 +56,6 @@ end
 %역 라플라스 변환
 res = [];
 res = ilaplace(terms);
-res = simplify(res, 'Steps',10);
+%res = simplify(res, 'Steps',10);
 res = collect(res, exp(-t)); %exp(-t)를 기준으로 다항식을 모은 후 정렬
-
 

@@ -14,10 +14,6 @@ new_d = [];
 
 for k = 1:length(r)
     s = [1, -r(k)];
-    for i = 2:order_r(k)
-        s = conv(s, s);
-    end
     new_d = [new_d; s];
     new_c = [new_c; c(k)];
 end
-

@@ -43,6 +43,6 @@ end
 
 %%
 [c, order_r] = partial_fraction(N, r);
-[new_c, new_d] = coeff_changer(c, r, order_r);
+[new_c, new_d] = coeff_changer(c, r);
 res = inverse_laplace(new_c, new_d, K_s, is_complex, order_r);
 res

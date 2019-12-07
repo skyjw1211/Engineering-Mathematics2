@@ -1,24 +1,25 @@
 function main2()
 %%
-%ctrl+r·Î ÁÖ¼®, ctrl+t·Î ÁÖ¼® ÇØÁ¦
-%ÃÊ±ê°ª ÁÖ±â
+%ctrl+rë¡œ ì£¼ì„, ctrl+të¡œ ì£¼ì„ í•´ì œ
+%ì´ˆê¹ƒê°’ ì£¼ê¸°
 % N = [1 2];
 % D = [1 4 3 0];
 
+format long;
 %%
-%ÃÊ±â °ª ÀÔ·Â [1 2] <- ÀÌ·± ½ÄÀ¸·Î ÀÔ·ÂÇØ¾ß ÇÔ.
-prompt_N = "ºĞÀÚ ´ÙÇ×½ÄÀÇ °è¼ö¸¦ ÀÔ·ÂÇÏ¼¼¿ä, N(s): ";
+%ì´ˆê¸° ê°’ ì…ë ¥ [1 2] <- ì´ëŸ° ì‹ìœ¼ë¡œ ì…ë ¥í•´ì•¼ í•¨.
+prompt_N = "ë¶„ì ë‹¤í•­ì‹ì˜ ê³„ìˆ˜ë¥¼ ì…ë ¥í•˜ì„¸ìš”, N(s): ";
 N = input(prompt_N);
 N
-prompt_D = "ºĞ¸ğ ´ÙÇ×½ÄÀÇ °è¼ö¸¦ ÀÔ·ÂÇÏ¼¼¿ä, D(s): ";
+prompt_D = "ë¶„ëª¨ ë‹¤í•­ì‹ì˜ ê³„ìˆ˜ë¥¼ ì…ë ¥í•˜ì„¸ìš”, D(s): ";
 D = input(prompt_D);
 D
-% prompt_r = "ÇØ¸¦ ÀÔ·ÂÇÏ¼¼¿ä, r: ";
+% prompt_r = "í•´ë¥¼ ì…ë ¥í•˜ì„¸ìš”, r: ";
 % r = input(prompt_r);
 % r
 
 %%
-%NÀÇ Â÷¼ö°¡ Dº¸´Ù Å« °æ¿ì
+%Nì˜ ì°¨ìˆ˜ê°€ Dë³´ë‹¤ í° ê²½ìš°
 syms s
 Q = [];
 if size(N,2) >= size(D,2)
@@ -28,52 +29,60 @@ end
 K_s = poly2sym(Q,s);
 % K_s =0;
 %%
-%Bairstow¹æ½ÄÀ¸·Î ºĞ¸ğ ´ÙÇ×½ÄÀÇ ÇØ ±¸ÇÏ±â
-r = Bairstow(D); %bairstow ÇØ
+%Bairstowë°©ì‹ìœ¼ë¡œ ë¶„ëª¨ ë‹¤í•­ì‹ì˜ í•´ êµ¬í•˜ê¸°
+r = Bairstow(D); %bairstow í•´
 
 
-%ÇØ Áß¿¡ º¹¼Ò¼ö°¡ ÀÖ´Â ºÎºĞÀ» 1·Î °®´Â º¤ÅÍ is_complex
+%í•´ ì¤‘ì— ë³µì†Œìˆ˜ê°€ ìˆëŠ” ë¶€ë¶„ì„ 1ë¡œ ê°–ëŠ” ë²¡í„° is_complex
 is_complex = zeros(1,length(r));
 for k = 1:length(r)
-    if ~isreal(r(k)) %r(k)°¡ º¹¼Ò¼ö¸é, ½Ç¼ö°¡ ¾Æ´Ï¸é
+    if ~isreal(r(k)) %r(k)ê°€ ë³µì†Œìˆ˜ë©´, ì‹¤ìˆ˜ê°€ ì•„ë‹ˆë©´
         is_complex(k) = 1;
     end
 end
 
 
-%% ½ÇÃø °ª¿¡¼­ÀÇ ¿ÀÂ÷°¡ ¶óÇÃ¶ó½º ¿ªº¯È¯¿¡ ¹ÌÄ¡´Â ¿µÇâ
+%% ì‹¤ì¸¡ ê°’ì—ì„œì˜ ì˜¤ì°¨ê°€ ë¼í”Œë¼ìŠ¤ ì—­ë³€í™˜ì— ë¯¸ì¹˜ëŠ” ì˜í–¥
+hold off
+format long;
 [c, order_r] = partial_fraction(N, r);
 [new_c, new_d] = coeff_changer(c, r, order_r);
 res = inverse_laplace(new_c, new_d, K_s, is_complex, order_r);
 r
 res
+% fplot(res, [-9, 6]); %ë²”ë¡€ for ê·¸ë˜í”„ ìœ ì‚¬í•œ ì§€ ë¹„êµ
+% hold on %ë²”ë¡€ for ê·¸ë˜í”„ ìœ ì‚¬í•œ ì§€ ë¹„êµ
 res_origin = res;
 
-hold off
+
 % fplot(res);
 % hold on
 
-h = 1e-3;
-for i = 1:3
-    %¿ÀÂ÷ ±¸ÇÏ±â
-    h = h*0.1;
+h = 1;
+for i = 1:4
+    %ì˜¤ì°¨ êµ¬í•˜ê¸°
+    h = h*1e-2;
     r_temp = r;
     for k = 1:length(r_temp)
-        %rng('default'); % For reproducibility
-        rnd_num = randn; %³­¼ö »ı¼º(Á¤±Ô ºĞÆ÷)
-        rnd_num = rnd_num*h; %¿ÀÂ÷ÀÇ Å©±â¸¦ º¯°æÇÏ±â À§ÇÑ h
-        r_temp(k) = r(k)+rnd_num; %³­¼ö¸¦ ±Ù¿¡ ´õÇØÁÜÀ¸·Î½á ½ÇÁ¦ ÃøÁ¤°ªÀ¸·Î ³ª¿Ã¸¸ÇÑ °ªÀ¸·Î ¸¸µé¾î ÁØ´Ù. Áï, ¿ÀÂ÷¸¦ Æ÷ÇÔÇÑ °ª
+%         rng('default'); % For reproducibility ì£¼ì„ í•´ì œ ì‹œ ê°™ì€ ë‚œìˆ˜ë¡œ ì˜¤ì°¨ ë°œìƒ
+        rnd_num = rand(1); %ë‚œìˆ˜ ìƒì„±
+        rnd_num = rnd_num*h; %ì˜¤ì°¨ì˜ í¬ê¸°ë¥¼ ë³€ê²½í•˜ê¸° ìœ„í•œ h
+        r_temp(k) = r(k)+((-1)^(randi([1,2])))*rnd_num; %ë‚œìˆ˜ë¥¼ ê·¼ì— ë”í•´ì¤Œìœ¼ë¡œì¨ ì‹¤ì œ ì¸¡ì •ê°’ìœ¼ë¡œ ë‚˜ì˜¬ë§Œí•œ ê°’ìœ¼ë¡œ ë§Œë“¤ì–´ ì¤€ë‹¤. ì¦‰, ì˜¤ì°¨ë¥¼ í¬í•¨í•œ ê°’
+                                                      %(-1)^randi([1,2]): ìŒ, ì–‘ ë¶€í˜¸ë¥¼ randomí•˜ê²Œ ì¤Œ    
+        
     end
 
+    
     [c, order_r] = partial_fraction(N, r_temp);
     [new_c, new_d] = coeff_changer(c, r_temp, order_r);
     res = inverse_laplace(new_c, new_d, K_s, is_complex, order_r);
     r_temp
     res
-    
-    fplot(res_origin-res, [-1, 1]); %¿ÀÂ÷ °è»ê ÈÄ plot
+%     fplot(res, [-9, 6]); %ë²”ë¡€ for ê·¸ë˜í”„ ìœ ì‚¬í•œ ì§€ ë¹„êµ
+    fplot(res_origin-res, [-3, 6]); %ì˜¤ì°¨ ê³„ì‚° í›„ plot
     hold on
 
 end
-legend('h: 0.001', 'h: 0.0001', 'h: 0.00001'); %¹ü·Ê
+% legend('h: 1','h: 1e-2', 'h: 1e-4', 'h: 1e-6' , 'h: 1e-8'); %ë²”ë¡€ for ê·¸ë˜í”„ ìœ ì‚¬í•œ ì§€ ë¹„êµ
+legend('h: 1e-2', 'h: 1e-4', 'h: 1e-6' , 'h: 1e-8'); %ë²”ë¡€ for ì˜¤ì°¨ ë¹„êµ
 

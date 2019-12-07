@@ -46,7 +46,7 @@ end
 hold off
 format long;
 [c, order_r] = partial_fraction(N, r);
-[new_c, new_d] = coeff_changer(c, r, order_r);
+[new_c, new_d] = coeff_changer(c, r);
 res = inverse_laplace(new_c, new_d, K_s, is_complex, order_r);
 r
 res
@@ -74,7 +74,7 @@ for i = 1:4
 
     
     [c, order_r] = partial_fraction(N, r_temp);
-    [new_c, new_d] = coeff_changer(c, r_temp, order_r);
+    [new_c, new_d] = coeff_changer(c, r_temp);
     res = inverse_laplace(new_c, new_d, K_s, is_complex, order_r);
     r_temp
     res
